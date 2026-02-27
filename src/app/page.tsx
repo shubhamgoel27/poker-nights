@@ -10,12 +10,14 @@ import { Button } from "@/components/ui/button";
 
 export const dynamic = "force-dynamic";
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
   const db = getDb();
-  const summary = getDashboardSummary(db);
-  const playerStats = getPlayerStats(db);
-  const cumulativeProfits = getCumulativeProfits(db);
-  const funTitles = getFunTitles(db);
+  const [summary, playerStats, cumulativeProfits, funTitles] = await Promise.all([
+    getDashboardSummary(db),
+    getPlayerStats(db),
+    getCumulativeProfits(db),
+    getFunTitles(db),
+  ]);
 
   const playerNames = playerStats.map((p) => p.name);
 

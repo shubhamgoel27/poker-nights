@@ -3,8 +3,8 @@ import { getDb } from "@/lib/db";
 
 export async function GET() {
   const db = getDb();
-  const players = db.prepare("SELECT * FROM players ORDER BY name").all();
-  return NextResponse.json(players);
+  const result = await db.execute("SELECT * FROM players ORDER BY name");
+  return NextResponse.json(result.rows);
 }
 
 export async function POST(request: Request) {
@@ -16,12 +16,13 @@ export async function POST(request: Request) {
   }
 
   try {
-    const result = db
-      .prepare("INSERT INTO players (name, emoji) VALUES (?, ?)")
-      .run(name.trim(), emoji || "🃏");
+    const result = await db.execute({
+      sql: "INSERT INTO players (name, emoji) VALUES (?, ?)",
+      args: [name.trim(), emoji || "🃏"],
+    });
 
-    const player = db.prepare("SELECT * FROM players WHERE id = ?").get(result.lastInsertRowid);
-    return NextResponse.json(player, { status: 201 });
+    const player = await db.execute({ sql: "SELECT * FROM players WHERE id = ?", args: [Number(result.lastInsertRowid)] });
+    return NextResponse.json(player.rows[0], { status: 201 });
   } catch (e: unknown) {
     if (e instanceof Error && e.message.includes("UNIQUE")) {
       return NextResponse.json({ error: "Player already exists" }, { status: 409 });
