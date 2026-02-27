@@ -1,7 +1,10 @@
-app = "poker-nights"
-primary_region = "sjc"
+# fly.toml app configuration file generated for poker-nights on 2026-02-27T08:45:21Z
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
 
-[build]
+app = 'poker-nights'
+primary_region = 'ams'
 
 [env]
   DATA_DIR = "/data"
@@ -11,14 +14,13 @@ primary_region = "sjc"
 [http_service]
   internal_port = 8080
   force_https = true
-  auto_stop_machines = "stop"
+  auto_stop_machines = 'stop'
   auto_start_machines = true
   min_machines_running = 0
-
-[mounts]
-  source = "poker_data"
-  destination = "/data"
+  processes = ['app']
 
 [[vm]]
-  size = "shared-cpu-1x"
-  memory = "256mb"
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
+  memory_mb = 256
