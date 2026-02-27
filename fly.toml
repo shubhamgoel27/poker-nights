@@ -6,7 +6,10 @@
 app = 'poker-nights'
 primary_region = 'ams'
 
-[build]
+[env]
+  DATA_DIR = "/data"
+  PORT = "8080"
+  HOSTNAME = "0.0.0.0"
 
 [http_service]
   internal_port = 8080
